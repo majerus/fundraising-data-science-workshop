@@ -13,7 +13,10 @@ model_df <-
 
 # create train and test data sets
 train <- sample_frac(model_df, size = .8)
-test <- filter(model_df, !id %in% train$id)
+test <- 
+  model_df %>% 
+  filter(!id %in% train$id)
+
 
 # drop id from train and test
 train$id <- NULL

@@ -26,14 +26,14 @@ df <-
   filter(!is.na(class)) %>% 
   select(-constituency)
 
+
 # create id variable
 df$id <- 1:nrow(df)
 
 # create binary giving indicators
-# df <- 
-#   df %>% 
+# df <-
+#   df %>%
 #   mutate_at(.vars = vars(matches('af|cap')),
 #             .funs = list(binary = function(x) ifelse(x > 0, 1, 0)))
-# 
 
 
