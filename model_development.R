@@ -17,14 +17,13 @@ test <-
   model_df %>% 
   filter(!id %in% train$id)
 
-
 # drop id from train and test
 train$id <- NULL
 test$id <- NULL
 
-
 # starter model example
-model_1 <- lm(af18 ~ af17, data = df)
+model_1 <- 
+  lm(af18 ~ af17 + af16 + class, data = train)
 
 get_regression_table(model_1)
 get_regression_points(model_1)
@@ -56,11 +55,10 @@ get_regression_points(model_1) %>%
 # Set up repeated k-fold cross-validation
 train.control <- trainControl(method = "cv", number = 2)
 
-
 # Train the model
 step.model <- train(af18 ~ ., data = train,
-                    method = "leapBackward", 
-                    tuneGrid = data.frame(nvmax = 1:10),
+                    method = "leapForward", 
+                    tuneGrid = data.frame(nvmax = 1:12),
                     trControl = train.control
 )
 
@@ -77,7 +75,7 @@ summary(step.model$finalModel)
 coef(step.model$finalModel, step.model$bestTune[1,1])
 
 # replicate starter approach with new model
-model_2 <- lm(af18 ~ af14 + af15 + af17 + cap14 + cap16 + cap17 + cap18, train)
+model_2 <- lm(af18 ~ af14 + af15 + af16 + af17, train)
 
 # test model on test data
 get_regression_points(model_2, newdata = test)
@@ -87,3 +85,11 @@ get_regression_points(model_2, newdata = test) %>%
 
 # alternative using the predict function
 predict(model_2, newdata = test)
+
+
+
+# keep this
+df %>% 
+  mutate(predicted_giving = predict(model_2, newdata = df)) %>% 
+  select(af18, predicted_giving)
+
